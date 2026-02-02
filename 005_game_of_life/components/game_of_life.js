@@ -1,4 +1,3 @@
-import {loadResource} from "../../static/utils/resources.js";
 
 
 export default {
@@ -12,7 +11,7 @@ export default {
     },
     async mounted() {
         await this.$nextTick(); // NOTE: wait for window.path_prefix to be set
-        await loadResource(window.path_prefix + `${this.resource_path}/p5/p5.min.js`);
+        await this.loadScriptFromCDN("https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js");
 
         this.generation_num = 0;
         this.grid = [];
@@ -173,5 +172,14 @@ export default {
         resize() {
             this.init_grid("resize");
         },
+        loadScriptFromCDN(url) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement("script");
+                script.src = url;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
     },
 };
