@@ -6,6 +6,11 @@ from nicegui import ui
 from components import D3LineChart
 
 
+# Generate a single random value
+def generate_random_value() -> int:
+    return int(random.random() * 100) + 1
+
+
 # Generate initial data
 def generate_data(start_date: date = None, days: int = 7) -> list:
     if start_date is None:
@@ -16,7 +21,7 @@ def generate_data(start_date: date = None, days: int = 7) -> list:
         current_date = start_date + timedelta(days=i)
         data.append({
             "date": current_date.strftime("%Y-%m-%d"),
-            "value": int(random.random() * 100) + 1,
+            "value": generate_random_value(),
         })
     return data
 
@@ -70,12 +75,28 @@ def main_page():
     # Create the chart component
     chart = D3LineChart(data=data).classes("w-full")
 
-    # Add randomize button
+    def add_random_data_point():
+        """Add a single random data point to the chart."""
+        current_data = chart.data
+        if current_data:
+            last_date = current_data[-1]["date"]
+            last_date_obj = date.fromisoformat(last_date)
+            new_date = last_date_obj + timedelta(days=1)
+            new_data_point = {
+                "date": new_date.strftime("%Y-%m-%d"),
+                "value": generate_random_value(),
+            }
+            updated_data = current_data + [new_data_point]
+            chart.set_data(updated_data)
+    
     def randomize_data():
+        """Generate entirely new data for the chart."""
         new_data = generate_data()
         chart.set_data(new_data)
     
-    ui.button("Randomize Data", on_click=randomize_data).classes("q-mt-md")
+    with ui.row():
+        ui.button("Add Random Point", on_click=add_random_data_point).classes("q-mt-md q-mr-sm")
+        ui.button("Randomize Data", on_click=randomize_data).classes("q-mt-md")
 
 
 if __name__ in {"__main__", "__mp_main__"}:
