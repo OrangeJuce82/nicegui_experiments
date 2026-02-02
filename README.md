@@ -25,3 +25,5 @@ uv run python 001_fake_secret_app/main.py
 | 004 | [benchmark_fibonacci](/004_benchmark_fibonacci/) | Fibonacci benchmark |
 | 005 | [game_of_life](/005_game_of_life/) | Conway's Game of Life with p5.js |
 | 006 | [d3js_linechart](/006_d3js_linechart/) | D3.js line chart integration |
+| 007 | [point_cloud](/007_point_cloud/) | 3D Point Cloud with Three.js (Python-side animation) |
+| 008 | [point_cloud_threejs](/008_point_cloud_threejs/) | 3D Point Cloud with Three.js (JS-side animation with configurable FPS) |
