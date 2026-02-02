@@ -7,11 +7,11 @@ class D3LineChart(
     ui.element,
     component="d3_linechart.js",
 ):
-    def __init__(self, data: list = None):
+    def __init__(self, data: list = None, width: int = None, height: int = None):
         super().__init__()
         self._props['data'] = data or []
-        self._props['width'] = None
-        self._props['height'] = None
+        self._props['width'] = width
+        self._props['height'] = height
 
     @property
     def data(self):
