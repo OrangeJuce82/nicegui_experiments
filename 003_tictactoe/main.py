@@ -9,9 +9,14 @@ from nicegui.events import ClickEventArguments, Handler
 
 PLAYERS: list[str] = ["X", "O"]
 WINNING_COMBOS: list[set[int]] = [
-    {0, 1, 2}, {3, 4, 5}, {6, 7, 8},  # Horizontal indexes
-    {0, 3, 6}, {1, 4, 7}, {2, 5, 8},  # Vertical indexes
-    {0, 4, 8}, {2, 4, 6}  # Diagonal indexes
+    {0, 1, 2},
+    {3, 4, 5},
+    {6, 7, 8},  # Horizontal indexes
+    {0, 3, 6},
+    {1, 4, 7},
+    {2, 5, 8},  # Vertical indexes
+    {0, 4, 8},
+    {2, 4, 6},  # Diagonal indexes
 ]
 
 
@@ -40,7 +45,9 @@ class Square(ui.element):
                 color = "red" if self.value == "X" else "indigo-4"
                 ui.icon(name, size="3em", color=color).classes("size-16")
             else:
-                ui.button(self.value, on_click=lambda: self._on_click(self._index)).classes("size-16")
+                ui.button(
+                    self.value, on_click=lambda: self._on_click(self._index)
+                ).classes("size-16")
 
 
 class Player(ui.element):
@@ -63,13 +70,12 @@ class Game:
                         for col_index in range(3):
                             self._board.append(
                                 Square(
-                                    index=row_index * 3 + col_index,
-                                    on_click=self.play
+                                    index=row_index * 3 + col_index, on_click=self.play
                                 )
                             )
 
             ui.label().bind_text(self, "_message").classes("w-full text-center text-xl")
-            ui.button("reset", icon="refresh", on_click=self.reset).classes('m-auto')
+            ui.button("reset", icon="refresh", on_click=self.reset).classes("m-auto")
             self.reset()
 
     def play(self, square_index: int):
@@ -112,10 +118,10 @@ class Game:
         self._player_index = (self._player_index + 1) % len(PLAYERS)
 
 
-@ui.page('/')
+@ui.page("/")
 def play_game():
     Game()
 
 
-if __name__ in {'__main__', '__mp_main__'}:
+if __name__ in {"__main__", "__mp_main__"}:
     ui.run(port=46758)

@@ -14,7 +14,7 @@ from sympy import fibonacci
 # --- Fibonacci ---
 def fib_binet(n):
     phi = (1 + sqrt(5)) / 2
-    return round((phi ** n - (-phi) ** -n) / sqrt(5))
+    return round((phi**n - (-phi) ** -n) / sqrt(5))
 
 
 def fib_sympy(n):
@@ -88,18 +88,18 @@ def create_plot(data):
 
     colors = ["#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", "#D5BAFF"]
     ax.bar(names, times, color=colors)
-    ax.set_ylabel('Time (seconds)')
-    ax.set_title(f'Execution time for Fibonacci(n)')
+    ax.set_ylabel("Time (seconds)")
+    ax.set_title(f"Execution time for Fibonacci(n)")
 
     # Improve x-axis labels spacing
     ax.set_xticks(range(len(names)))
-    ax.set_xticklabels(names, rotation=45, ha='right')  # Rotate and align labels
+    ax.set_xticklabels(names, rotation=45, ha="right")  # Rotate and align labels
 
     # Adjust the x-ticks for more uniform spacing
     ax.set_xticks(np.arange(len(names)))
 
     # Set y-axis to logarithmic scale
-    ax.set_yscale('log')
+    ax.set_yscale("log")
 
     # Add padding at the bottom for the x-axis labels
     plt.subplots_adjust(bottom=0.3)  # Adjust the bottom padding
@@ -125,15 +125,19 @@ async def on_run():
     # Cache the results and the plot
     table.rows.clear()
     for name, data in results.items():
-        table.add_row(row={
-            "name": name,
-            "result": data["result"],
-            "time": f"{data['time']:.6f} s",
-        })
+        table.add_row(
+            row={
+                "name": name,
+                "result": data["result"],
+                "time": f"{data['time']:.6f} s",
+            }
+        )
 
     # Generate and display the plot
     plot_image = create_plot(results)
-    plot.set_content(f'<img src="data:image/png;base64,{plot_image}" style="width:100%;">')
+    plot.set_content(
+        f'<img src="data:image/png;base64,{plot_image}" style="width:100%;">'
+    )
 
     # Hide the spinner after the calculation
     spinner.visible = False
@@ -145,14 +149,14 @@ with ui.column().classes("text-center w-[600px] m-auto"):
     with ui.row():
         number_input = ui.number(label="Value of n", value=10, min=1, step=1)
         ui.button("Run the benchmark", on_click=on_run)
-        spinner = ui.spinner('audio', size='lg')
+        spinner = ui.spinner("audio", size="lg")
         spinner.visible = False
 
     # Create the table for displaying results
     columns = [
-        {'name': 'name', 'label': 'Name', 'field': 'name'},
-        {'name': 'result', 'label': 'Result', 'field': 'result'},
-        {'name': 'time', 'label': 'Time', 'field': 'time', 'sortable': True},
+        {"name": "name", "label": "Name", "field": "name"},
+        {"name": "result", "label": "Result", "field": "result"},
+        {"name": "time", "label": "Time", "field": "time", "sortable": True},
     ]
     table = ui.table(columns=columns, rows=[]).classes("w-full mt-4")
 

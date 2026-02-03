@@ -15,14 +15,16 @@ def generate_random_value() -> int:
 def generate_data(start_date: date = None, days: int = 7) -> list:
     if start_date is None:
         start_date = date(2024, 1, 1)
-    
+
     data = []
     for i in range(days):
         current_date = start_date + timedelta(days=i)
-        data.append({
-            "date": current_date.strftime("%Y-%m-%d"),
-            "value": generate_random_value(),
-        })
+        data.append(
+            {
+                "date": current_date.strftime("%Y-%m-%d"),
+                "value": generate_random_value(),
+            }
+        )
     return data
 
 
@@ -33,9 +35,9 @@ data = generate_data()
 @ui.page("/")
 def main_page():
     ui.label("D3.js Line Chart with NiceGUI").classes("text-h4 q-pb-md")
-    
+
     # Add custom styles
-    ui.add_head_html('''
+    ui.add_head_html("""
         <style>
             .d3-linechart-container {
                 background: #1a1a2e;
@@ -70,8 +72,8 @@ def main_page():
                 z-index: 1000;
             }
         </style>
-    ''')
-    
+    """)
+
     # Create the chart component
     chart = D3LineChart(data=data).classes("w-full")
 
@@ -88,14 +90,16 @@ def main_page():
             }
             updated_data = current_data + [new_data_point]
             chart.set_data(updated_data)
-    
+
     def randomize_data():
         """Generate entirely new data for the chart."""
         new_data = generate_data()
         chart.set_data(new_data)
-    
+
     with ui.row():
-        ui.button("Add Random Point", on_click=add_random_data_point).classes("q-mt-md q-mr-sm")
+        ui.button("Add Random Point", on_click=add_random_data_point).classes(
+            "q-mt-md q-mr-sm"
+        )
         ui.button("Randomize Data", on_click=randomize_data).classes("q-mt-md")
 
 

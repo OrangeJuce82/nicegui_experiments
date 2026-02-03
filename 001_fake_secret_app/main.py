@@ -2,6 +2,7 @@
 """This is just a simple authentication example
 with a secret page that generates a secret for secret things.
 """
+
 import hashlib
 from typing import Optional
 
@@ -12,11 +13,11 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 # In the real life, users passwords would obviously need to be hashed
 USER_PASSWORDS = {
-    'roger': 'moore',
+    "roger": "moore",
 }
 
 UNRESTRICTED_PAGE_ROUTES = {
-    '/',
+    "/",
 }
 
 
@@ -27,17 +28,20 @@ class AuthMiddleware(BaseHTTPMiddleware):
     """
 
     async def dispatch(self, request: Request, call_next):
-        if not app.storage.user.get('authenticated', False) and request.url.path in UNRESTRICTED_PAGE_ROUTES:
+        if (
+            not app.storage.user.get("authenticated", False)
+            and request.url.path in UNRESTRICTED_PAGE_ROUTES
+        ):
             # Remember where the user wanted to go
-            app.storage.user['next_url'] = request.url.path
-            return RedirectResponse('/login')
+            app.storage.user["next_url"] = request.url.path
+            return RedirectResponse("/login")
         return await call_next(request)
 
 
 app.add_middleware(AuthMiddleware)
 
 
-@ui.page('/login')
+@ui.page("/login")
 def login() -> Optional[RedirectResponse]:
     # local function to avoid passing username and password as arguments
     def try_login():
@@ -45,43 +49,43 @@ def login() -> Optional[RedirectResponse]:
             # update user properties
             app.storage.user.update(
                 {
-                    'username': username.value,
-                    'authenticated': True,
+                    "username": username.value,
+                    "authenticated": True,
                 }
             )
 
             # Go back to where the user wanted to go, otherwise go home
-            next_url = app.storage.user.get('next_url', '/')
+            next_url = app.storage.user.get("next_url", "/")
             ui.navigate.to(next_url)
         else:
             ui.notify(
-                message='Wrong username or password',
-                color='negative',
+                message="Wrong username or password",
+                color="negative",
             )
 
     # If user is already authenticated, Go home
-    if app.storage.user.get('authenticated', False):
-        return RedirectResponse('/')
+    if app.storage.user.get("authenticated", False):
+        return RedirectResponse("/")
 
     with ui.card().classes("absolute-center w-[400px] p-10"):
-        username = ui.input('Username').classes("w-full").on('keydown.enter', try_login)
-        password = ui.input(
-            'Password',
-            password=True,
-            password_toggle_button=True
-        ).classes("w-full").on('keydown.enter', try_login)
-        ui.button('Log in', on_click=try_login)
+        username = ui.input("Username").classes("w-full").on("keydown.enter", try_login)
+        password = (
+            ui.input("Password", password=True, password_toggle_button=True)
+            .classes("w-full")
+            .on("keydown.enter", try_login)
+        )
+        ui.button("Log in", on_click=try_login)
 
 
-@ui.page('/')
+@ui.page("/")
 def main_page():
     def logout():
         app.storage.user.clear()
-        ui.navigate.to('/login')
+        ui.navigate.to("/login")
 
     def gen_secret_then_copy_in_clipboard():
-        hash = hashlib.new('sha512_256')
-        hash.update(code_input.value.encode('utf-8'))
+        hash = hashlib.new("sha512_256")
+        hash.update(code_input.value.encode("utf-8"))
         hash.hexdigest()
 
         secret_value = hash.hexdigest()
@@ -113,14 +117,17 @@ def main_page():
         )
 
         # Add the code input
-        code_input = ui.input(label="Code").classes("w-full").on("keydown.enter", gen_secret_then_copy_in_clipboard)
+        code_input = (
+            ui.input(label="Code")
+            .classes("w-full")
+            .on("keydown.enter", gen_secret_then_copy_in_clipboard)
+        )
 
         # Add delete button to clear value
         with code_input as el:
-            ui.button(
-                on_click=lambda: el.set_value(None),
-                icon="delete"
-            ).props('flat dense').bind_visibility_from(el, 'value')
+            ui.button(on_click=lambda: el.set_value(None), icon="delete").props(
+                "flat dense"
+            ).bind_visibility_from(el, "value")
 
         container = ui.row()
 
@@ -130,10 +137,10 @@ def main_page():
             ui.button(on_click=logout, icon="logout", color="secondary")
 
 
-if __name__ in {'__main__', '__mp_main__'}:
+if __name__ in {"__main__", "__mp_main__"}:
     ui.run(
         # reload=False,
         # native=True,
         # port=native.find_open_port(),
-        storage_secret='THIS_NEEDS_TO_BE_CHANGED'
+        storage_secret="THIS_NEEDS_TO_BE_CHANGED"
     )

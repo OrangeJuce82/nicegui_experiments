@@ -28,20 +28,22 @@ colors[:, 1] = (Y_flat + 3) / 6
 colors[:, 2] = 0.5
 
 # Create a 3D scene with show_stats=True
-with ui.scene(show_stats=True, fps=FPS).classes('w-full h-96') as scene:
+with ui.scene(show_stats=True, fps=FPS).classes("w-full h-96") as scene:
     # Create point cloud
     point_cloud = scene.point_cloud(positions, colors, point_size=0.15)
+
 
 # Timer to animate points (throttled to 30 FPS to avoid websocket bottleneck)
 def animate_points():
     global time
     time += 0.05
-    
+
     # Only update Z coordinates (in-place modification)
     positions[:, 2] = np.sin(X_flat * 1.0 + time) * np.cos(Y_flat * 1.0 + time) + 1
-    
+
     # Update point cloud with new positions
     point_cloud.set_points(positions, colors)
+
 
 ui.timer(1.0 / FPS, animate_points)
 

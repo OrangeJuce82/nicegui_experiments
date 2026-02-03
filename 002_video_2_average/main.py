@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""An app who take a video then generate secondary images.
-"""
+"""An app who take a video then generate secondary images."""
+
 import base64
 import os
 import threading
@@ -14,10 +14,8 @@ from nicegui import ui, events
 
 
 def log(message: Union[str, Exception]):
-    date_str = datetime.now().strftime('%X.%f')[:-5]
-    log_element.push(
-        f"{date_str} | {message}"
-    )
+    date_str = datetime.now().strftime("%X.%f")[:-5]
+    log_element.push(f"{date_str} | {message}")
 
 
 class Average:
@@ -36,7 +34,7 @@ class Average:
         if not self._counter:
             raise ValueError("No frames yet")
 
-        return (self._summ / self._counter).astype('uint8')
+        return (self._summ / self._counter).astype("uint8")
 
 
 def decode_video(filepath, notify, container):
@@ -57,8 +55,8 @@ def decode_video(filepath, notify, container):
             frame_index += 1
             notify(f"{frame_index} | {frame.shape}")
 
-        _, buffer = cv2.imencode('.jpeg', avg.compute())
-        encoded_image = base64.b64encode(buffer).decode('utf-8')
+        _, buffer = cv2.imencode(".jpeg", avg.compute())
+        encoded_image = base64.b64encode(buffer).decode("utf-8")
 
         with container:
             ui.image(f"data:image/jpeg;base64,{encoded_image}")
@@ -76,15 +74,16 @@ def decode_video(filepath, notify, container):
 
 async def handle_upload(args: events.UploadEventArguments) -> None:
     try:
-        async with aiofiles.tempfile.NamedTemporaryFile("wb", delete=False) as temp_file:
+        async with aiofiles.tempfile.NamedTemporaryFile(
+            "wb", delete=False
+        ) as temp_file:
             contents = args.content.read()
             await temp_file.write(contents)
 
             filepath = temp_file.name
             log(f"Start to decode {filepath}")
             threading.Thread(
-                target=decode_video,
-                args=(filepath, log, container)
+                target=decode_video, args=(filepath, log, container)
             ).start()
 
     except Exception as e:
@@ -93,16 +92,11 @@ async def handle_upload(args: events.UploadEventArguments) -> None:
 
 with ui.column().classes("w-full p-10") as container:
     upload_input = ui.upload(
-        label='Upload a video file',
-        auto_upload=True,
-        on_upload=handle_upload
-    ).classes('w-full')
-    log_element = ui.log(max_lines=10).classes('w-full h-40')
+        label="Upload a video file", auto_upload=True, on_upload=handle_upload
+    ).classes("w-full")
+    log_element = ui.log(max_lines=10).classes("w-full h-40")
 
-if __name__ in {'__main__', '__mp_main__'}:
+if __name__ in {"__main__", "__mp_main__"}:
     ui.run(
-        native=True,
-        port=8093,
-        reload=False,
-        storage_secret='THIS_NEEDS_TO_BE_CHANGED'
+        native=True, port=8093, reload=False, storage_secret="THIS_NEEDS_TO_BE_CHANGED"
     )

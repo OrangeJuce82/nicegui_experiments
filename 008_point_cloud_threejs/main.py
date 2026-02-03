@@ -29,11 +29,8 @@ colors[:, 2] = 0.5
 # Create the Three.js point cloud component with FPS configuration
 # Animation is handled entirely in JavaScript
 point_cloud = ThreejsPointCloud(
-    positions=positions, 
-    colors=colors, 
-    point_size=0.15,
-    fps=FPS
+    positions=positions, colors=colors, point_size=0.15, fps=FPS
 )
-point_cloud.classes('w-full h-96')
+point_cloud.classes("w-full h-96")
 
 ui.run()
