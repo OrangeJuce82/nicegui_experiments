@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
+from starlette.responses import JSONResponse
 from supabase import create_client, Client
 from storage3.exceptions import StorageApiError
 from fastapi.responses import Response
@@ -192,6 +193,17 @@ async def read_user_avatar(current_user: UserDep):
 async def read_users_me(current_user: UserDep):
     """Get current user info."""
     return {"id": current_user.id, "email": current_user.email, "avatar": avatar}
+
+
+@app.get("/users/hello")
+async def hello_me(current_user: UserDep):
+    """Get current user info."""
+    response = supabase.functions.invoke(
+        "hello-world",
+        invoke_options={"responseType": "json", "body": {"name": f"{current_user.id}"}}
+    )
+    return response
+
 
 
 if __name__ == "__main__":
