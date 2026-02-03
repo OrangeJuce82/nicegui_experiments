@@ -128,7 +128,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+009_supabase_demo/.env
 .venv
 env/
 venv/
@@ -176,3 +176,12 @@ nicegui_examples/
 
 node_modules
 package-lock.json
+
+# Supabase
+.branches
+../.temp
+
+# dotenvx
+.env.keys
+.env.local
+.env.*.local

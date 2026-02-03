@@ -9,3 +9,7 @@ pycairo
 pywebview
 pyinstaller
 sympy
+fastapi
+uvicorn
+supabase
+python-multipart
